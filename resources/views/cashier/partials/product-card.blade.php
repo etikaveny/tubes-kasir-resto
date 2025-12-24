@@ -1,5 +1,9 @@
 <div class="col-md-3 col-sm-6">
-    <div class="card product-card p-2 h-100" onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ asset('storage/' . $product->image) }}')">
+    <div class="card product-card p-2 h-100" 
+         data-id="{{ $product->id }}" 
+         data-name="{{ $product->name }}" 
+         data-price="{{ $product->price }}" 
+         data-image="{{ asset('storage/' . $product->image) }}">
         <div class="position-relative">
              @if($product->image)
             <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top product-img" alt="{{ $product->name }}">

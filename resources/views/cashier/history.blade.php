@@ -17,6 +17,7 @@
                         <th>Order ID</th>
                         <th>Date</th>
                         <th>Customer</th>
+                        <th>Type/Table</th>
                         <th>Items</th>
                         <th>Total Amount</th>
                         <th>Status</th>
@@ -28,6 +29,13 @@
                         <td>#{{ $order->id }}</td>
                         <td>{{ $order->created_at->format('d M Y, H:i') }}</td>
                         <td>{{ $order->customer_name }}</td>
+                        <td>
+                            @if($order->order_type == 'dine_in')
+                                <span class="badge bg-primary">Dine In</span> <br> <small class="text-muted">Table {{ $order->table_number }}</small>
+                            @else
+                                <span class="badge bg-warning text-dark">Take Away</span>
+                            @endif
+                        </td>
                         <td>
                             <ul class="list-unstyled mb-0">
                                 @foreach($order->items as $item)

@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="row h-100">
     <!-- Product Section -->
     <div class="col-md-9 d-flex flex-column h-100 pe-4">
@@ -17,7 +15,7 @@
             </div>
 
             <div class="d-flex align-items-center gap-3 flex-shrink-0">
-                 <a href="{{ route('cashier.history') }}" class="btn btn-light rounded-pill shadow-sm py-2 px-3 fw-bold d-flex align-items-center gap-2 text-decoration-none text-dark" style="background-color: #EAE5D9;">
+                 <a href="<?php echo e(route('cashier.history')); ?>" class="btn btn-light rounded-pill shadow-sm py-2 px-3 fw-bold d-flex align-items-center gap-2 text-decoration-none text-dark" style="background-color: #EAE5D9;">
                     <i class="bi bi-clock-history"></i> History
                  </a>
             </div>
@@ -28,31 +26,31 @@
             <li class="nav-item">
                 <button class="nav-link active rounded-pill px-4 py-2 border" data-bs-toggle="pill" data-bs-target="#all">All Menu</button>
             </li>
-            @foreach($categories as $category)
+            <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <li class="nav-item">
-                <button class="nav-link rounded-pill px-4 py-2 border" data-bs-toggle="pill" data-bs-target="#cat-{{ $category->id }}">{{ $category->name }}</button>
+                <button class="nav-link rounded-pill px-4 py-2 border" data-bs-toggle="pill" data-bs-target="#cat-<?php echo e($category->id); ?>"><?php echo e($category->name); ?></button>
             </li>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </ul>
 
         <!-- Product Grid -->
         <div class="tab-content flex-grow-1 overflow-auto" style="scrollbar-width: none;">
             <div class="tab-pane fade show active" id="all">
                 <div class="row g-3">
-                    @foreach($categories->flatMap->products as $product)
-                        @include('cashier.partials.product-card', ['product' => $product])
-                    @endforeach
+                    <?php $__currentLoopData = $categories->flatMap->products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php echo $__env->make('cashier.partials.product-card', ['product' => $product], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
             </div>
-            @foreach($categories as $category)
-            <div class="tab-pane fade" id="cat-{{ $category->id }}">
+            <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="tab-pane fade" id="cat-<?php echo e($category->id); ?>">
                 <div class="row g-3">
-                    @foreach($category->products as $product)
-                        @include('cashier.partials.product-card', ['product' => $product])
-                    @endforeach
+                    <?php $__currentLoopData = $category->products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php echo $__env->make('cashier.partials.product-card', ['product' => $product], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
             </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 
@@ -67,9 +65,9 @@
             
             <!-- Right: Profile (Centered over Take Away) -->
             <div class="col-6 d-flex justify-content-center">
-                <a href="{{ route('cashier.profile') }}" class="text-decoration-none text-dark d-flex align-items-center gap-2">
+                <a href="<?php echo e(route('cashier.profile')); ?>" class="text-decoration-none text-dark d-flex align-items-center gap-2">
                      <div class="text-end" style="line-height: 1.2;">
-                         <div class="fw-bold small">{{ Auth::user()->name }}</div>
+                         <div class="fw-bold small"><?php echo e(Auth::user()->name); ?></div>
                          <div class="small text-muted" style="font-size: 0.7rem;">Cashier</div>
                      </div>
                      <div class="bg-dark rounded-circle text-white d-flex align-items-center justify-content-center" style="width:40px;height:40px; font-size: 1.1rem;">
@@ -158,7 +156,7 @@
     }
 </style>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Styling toggle for radio buttons
@@ -343,11 +341,11 @@
             total_amount: Math.round(total)
         };
 
-        fetch('{{ route('cashier.order.store') }}', {
+        fetch('<?php echo e(route('cashier.order.store')); ?>', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
             },
             body: JSON.stringify(data)
         })
@@ -368,5 +366,7 @@
         });
     }
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /Users/lian/Documents/Kasir Resto/tubes-kasir-resto/resources/views/cashier/index.blade.php ENDPATH**/ ?>
