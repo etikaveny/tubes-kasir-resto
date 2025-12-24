@@ -26,6 +26,7 @@ class PosController extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string',
             'table_number' => 'nullable|string',
+            'order_type' => 'required|in:dine_in,take_away',
             'items' => 'required|array',
             'items.*.id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
@@ -39,9 +40,10 @@ class PosController extends Controller
                 'user_id' => Auth::id(),
                 'customer_name' => $validated['customer_name'],
                 'table_number' => $validated['table_number'] ?? null,
+                'order_type' => $validated['order_type'],
                 'total_amount' => $validated['total_amount'],
-                'payment_status' => 'paid', // Assuming immediate payment for now
-                'payment_method' => 'cash', // Default
+                'payment_status' => 'paid', 
+                'payment_method' => 'cash', 
             ]);
 
             foreach ($validated['items'] as $item) {
