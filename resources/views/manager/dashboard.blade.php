@@ -105,10 +105,16 @@
         <!-- Right Column: Stats Cards -->
         <div class="col-lg-4">
             <!-- Date Picker Dummy-->
-            <div class="bg-white rounded-pill px-4 py-2 mb-4 d-flex justify-content-between align-items-center shadow-sm">
-                <span><i class="bi bi-calendar"></i> {{ $dateLabel }}</span>
-                <i class="bi bi-chevron-down"></i>
-            </div>
+            <!-- Date Picker Form -->
+            <form action="{{ route(auth()->user()->role . '.dashboard') }}" method="GET" class="mb-4">
+                <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white">
+                    <span class="input-group-text border-0 bg-white ps-4 text-secondary"><i
+                            class="bi bi-calendar"></i></span>
+                    <input type="date" name="date" class="form-control border-0 text-secondary fw-bold"
+                        value="{{ isset($today) ? $today->format('Y-m-d') : date('Y-m-d') }}" onchange="this.form.submit()"
+                        style="outline: none; box-shadow: none;">
+                </div>
+            </form>
 
             <div class="d-flex flex-column gap-3">
                 <!-- Sales Daily -->

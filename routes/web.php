@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController; // Will create next
 use App\Http\Controllers\ProductController;   // Will create next
 use App\Http\Controllers\PosController;       // Will create next
 use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\Admin\AdminStaffController;
+
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -20,10 +22,12 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('staff', AdminStaffController::class);
     Route::get('/sales', [AdminReportController::class, 'sales'])->name('sales');
     Route::get('/history', [AdminReportController::class, 'history'])->name('history');
     Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
 });
+
 
 // Manager Routes
 Route::middleware(['auth', 'role:manager'])->prefix('manager')->name('manager.')->group(function () {
@@ -42,6 +46,7 @@ Route::middleware(['auth', 'role:cashier'])->prefix('cashier')->group(function (
     Route::get('/history', [App\Http\Controllers\PosController::class, 'history'])->name('cashier.history');
     Route::get('/profile', [App\Http\Controllers\PosController::class, 'profile'])->name('cashier.profile');
 });
+
 
 // Common Profile Action
 Route::delete('/profile', [App\Http\Controllers\ProfileController::class, 'destroy'])->middleware('auth')->name('profile.destroy');

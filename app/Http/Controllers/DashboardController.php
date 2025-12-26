@@ -9,23 +9,24 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $today = Carbon::today();
+        $date = $request->input('date');
+        $today = $date ? Carbon::parse($date) : Carbon::today();
 
         $totalSalesToday = Order::whereDate('created_at', $today)->sum('total_amount');
         $totalOrdersToday = Order::whereDate('created_at', $today)->count();
         $totalRefundsToday = Order::whereDate('created_at', $today)->where('payment_status', 'refunded')->sum('total_amount');
 
-        $totalSalesMonth = Order::whereMonth('created_at', $today->month)->sum('total_amount');
-        $totalOrdersMonth = Order::whereMonth('created_at', $today->month)->count();
-        $totalRefundsMonth = Order::whereMonth('created_at', $today->month)->where('payment_status', 'refunded')->sum('total_amount');
+        $totalSalesMonth = Order::whereMonth('created_at', $today->month)->whereYear('created_at', $today->year)->sum('total_amount');
+        $totalOrdersMonth = Order::whereMonth('created_at', $today->month)->whereYear('created_at', $today->year)->count();
+        $totalRefundsMonth = Order::whereMonth('created_at', $today->month)->whereYear('created_at', $today->year)->where('payment_status', 'refunded')->sum('total_amount');
 
-        // Simple Staff Performance (Top 3 by order count this month)
-        $topStaff = User::where('role', 'cashier')
+        // Simple Staff Performance (Top 3 by order count this month of selected date)
+        $topStaff = User::whereIn('role', ['cashier', 'manager']) // Include manager if they sell?
             ->withCount([
                 'orders' => function ($query) use ($today) {
-                    $query->whereMonth('created_at', $today->month);
+                    $query->whereMonth('created_at', $today->month)->whereYear('created_at', $today->year);
                 }
             ])
             ->orderByDesc('orders_count')
@@ -33,7 +34,7 @@ class DashboardController extends Controller
             ->get();
 
 
-        // Chart Data: Orders per hour for today
+        // Chart Data: Orders per hour for selected date
         $ordersPerHour = Order::selectRaw('HOUR(created_at) as hour, count(*) as count')
             ->whereDate('created_at', $today)
             ->groupBy('hour')
@@ -63,7 +64,8 @@ class DashboardController extends Controller
             'topStaff',
             'chartLabels',
             'chartData',
-            'dateLabel'
+            'dateLabel',
+            'today'
         ));
     }
 }

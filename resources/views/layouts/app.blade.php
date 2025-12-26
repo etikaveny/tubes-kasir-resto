@@ -83,9 +83,12 @@
                                 style="font-size: 0.6rem;">CRUD</span>
                         </a>
 
-                        <a class="nav-link text-secondary d-flex align-items-center gap-3 py-3 px-3 rounded-4" href="#">
-                            <i class="bi bi-people fs-5"></i> Staff
-                        </a>
+                        @if($role === 'admin')
+                            <a class="nav-link {{ request()->routeIs('admin.staff*') ? 'active-nav' : '' }} text-secondary d-flex align-items-center gap-3 py-3 px-3 rounded-4"
+                                href="{{ route('admin.staff.index') }}">
+                                <i class="bi bi-people fs-5"></i> Staff
+                            </a>
+                        @endif
                     </nav>
 
                     <div class="mt-auto pt-4 border-top">
