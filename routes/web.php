@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController; // Will create next
 use App\Http\Controllers\ProductController;   // Will create next
 use App\Http\Controllers\PosController;       // Will create next
+use App\Http\Controllers\AdminReportController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -16,9 +17,19 @@ Route::get('/register', [\App\Http\Controllers\RegisterController::class, 'showR
 Route::post('/register', [\App\Http\Controllers\RegisterController::class, 'register']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Admin Routes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/sales', [AdminReportController::class, 'sales'])->name('sales');
+    Route::get('/history', [AdminReportController::class, 'history'])->name('history');
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
+});
+
 // Manager Routes
 Route::middleware(['auth', 'role:manager'])->prefix('manager')->name('manager.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/sales', [AdminReportController::class, 'sales'])->name('sales');
+    Route::get('/history', [AdminReportController::class, 'history'])->name('history');
     Route::resource('products', ProductController::class);
     Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
 });
