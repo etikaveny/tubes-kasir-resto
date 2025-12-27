@@ -35,6 +35,7 @@ Route::middleware(['auth', 'role:manager'])->prefix('manager')->name('manager.')
     Route::get('/sales', [AdminReportController::class, 'sales'])->name('sales');
     Route::get('/history', [AdminReportController::class, 'history'])->name('history');
     Route::resource('products', ProductController::class);
+    Route::get('/staff', [\App\Http\Controllers\Manager\ManagerStaffController::class, 'index'])->name('staff.index');
     Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
 });
 
