@@ -35,11 +35,19 @@ class DashboardController extends Controller
 
 
         // Chart Data: Orders per hour for selected date
-        $ordersPerHour = Order::selectRaw('HOUR(created_at) as hour, count(*) as count')
+        $isSqlite = config('database.default') === 'sqlite';
+        $hourExpression = $isSqlite ? "strftime('%H', created_at)" : "HOUR(created_at)";
+
+        $ordersPerHour = Order::selectRaw("$hourExpression as hour, count(*) as count")
             ->whereDate('created_at', $today)
             ->groupBy('hour')
             ->orderBy('hour')
             ->pluck('count', 'hour');
+
+        // Cast keys to integer to ensure matching with loop below
+        $ordersPerHour = $ordersPerHour->mapWithKeys(function ($item, $key) {
+            return [(int) $key => $item];
+        });
 
         // Initialize array for hours 08:00 to 23:00
         $chartLabels = [];
@@ -54,7 +62,11 @@ class DashboardController extends Controller
         Carbon::setLocale('id'); // Attempt to set ID, fallback to EN if not installed
         $dateLabel = $today->translatedFormat('l, d F Y');
 
-        return view('manager.dashboard', compact(
+        // Determine view based on role
+        $role = auth()->user()->role;
+        $view = $role === 'admin' ? 'admin.dashboard' : 'manager.dashboard';
+
+        return view($view, compact(
             'totalSalesToday',
             'totalOrdersToday',
             'totalRefundsToday',
