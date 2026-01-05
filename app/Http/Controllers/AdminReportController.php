@@ -74,10 +74,17 @@ class AdminReportController extends Controller
 
 
         // 4. Hourly Sales Chart (Selected Date 08:00 - 23:00)
-        $hourlyOrders = Order::selectRaw('HOUR(created_at) as hour, count(*) as count')
+        $isSqlite = config('database.default') === 'sqlite';
+        $hourExpression = $isSqlite ? "strftime('%H', created_at)" : "HOUR(created_at)";
+
+        $hourlyOrders = Order::selectRaw("$hourExpression as hour, count(*) as count")
             ->whereDate('created_at', $selectedDate)
             ->groupBy('hour')
             ->pluck('count', 'hour');
+
+        $hourlyOrders = $hourlyOrders->mapWithKeys(function ($item, $key) {
+            return [(int) $key => $item];
+        });
 
         $hourlyLabels = [];
         $hourlyData = [];

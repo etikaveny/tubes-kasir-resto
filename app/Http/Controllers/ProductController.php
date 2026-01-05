@@ -8,22 +8,30 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->get();
+        $query = Product::with('category');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $products = $query->get();
         return view('manager.products.index', compact('products'));
     }
 
     public function create()
     {
-        if (auth()->user()->role !== 'admin') abort(403, 'Unauthorized action.');
+        if (auth()->user()->role !== 'admin')
+            abort(403, 'Unauthorized action.');
         $categories = Category::all();
         return view('manager.products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin') abort(403, 'Unauthorized action.');
+        if (auth()->user()->role !== 'admin')
+            abort(403, 'Unauthorized action.');
         $validated = $request->validate([
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
@@ -44,14 +52,16 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        if (auth()->user()->role !== 'admin') abort(403, 'Unauthorized action.');
+        if (auth()->user()->role !== 'admin')
+            abort(403, 'Unauthorized action.');
         $categories = Category::all();
         return view('manager.products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
     {
-        if (auth()->user()->role !== 'admin') abort(403, 'Unauthorized action.');
+        if (auth()->user()->role !== 'admin')
+            abort(403, 'Unauthorized action.');
         $validated = $request->validate([
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
@@ -72,7 +82,8 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if (auth()->user()->role !== 'admin') abort(403, 'Unauthorized action.');
+        if (auth()->user()->role !== 'admin')
+            abort(403, 'Unauthorized action.');
         $product->delete();
         return redirect()->route('manager.products.index')->with('success', 'Product deleted successfully.');
     }
