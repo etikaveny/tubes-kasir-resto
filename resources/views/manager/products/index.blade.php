@@ -9,7 +9,7 @@
                     value="{{ request('search') }}">
                 <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
             </form>
-            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
+            @if(auth()->user()->role === 'admin')
                 <a href="{{ route('manager.products.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add New
                     Product</a>
             @endif
@@ -30,7 +30,7 @@
                     <th>Price</th>
                     <th>Stock</th>
                     <th>Status</th>
-                    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
+                    @if(auth()->user()->role === 'admin')
                         <th>Actions</th>
                     @endif
                 </tr>
@@ -60,7 +60,7 @@
                                 <span class="badge bg-danger">Unavailable</span>
                             @endif
                         </td>
-                        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
+                        @if(auth()->user()->role === 'admin')
                             <td>
                                 <a href="{{ route('manager.products.edit', $product) }}" class="btn btn-sm btn-outline-dark"><i
                                         class="bi bi-pencil"></i></a>
