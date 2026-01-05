@@ -22,7 +22,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'manager')
+        if (auth()->user()->role !== 'admin')
             abort(403, 'Unauthorized action.');
         $categories = Category::all();
         return view('manager.products.create', compact('categories'));
@@ -30,7 +30,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'manager')
+        if (auth()->user()->role !== 'admin')
             abort(403, 'Unauthorized action.');
         $validated = $request->validate([
             'name' => 'required',
@@ -52,7 +52,7 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'manager')
+        if (auth()->user()->role !== 'admin')
             abort(403, 'Unauthorized action.');
         $categories = Category::all();
         return view('manager.products.edit', compact('product', 'categories'));
@@ -60,7 +60,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'manager')
+        if (auth()->user()->role !== 'admin')
             abort(403, 'Unauthorized action.');
         $validated = $request->validate([
             'name' => 'required',
@@ -82,7 +82,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'manager')
+        if (auth()->user()->role !== 'admin')
             abort(403, 'Unauthorized action.');
         $product->delete();
         return redirect()->route('manager.products.index')->with('success', 'Product deleted successfully.');
