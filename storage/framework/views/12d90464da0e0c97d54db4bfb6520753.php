@@ -7,7 +7,7 @@
                     value="<?php echo e(request('search')); ?>">
                 <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
             </form>
-            <?php if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager'): ?>
+            <?php if(auth()->user()->role === 'admin'): ?>
                 <a href="<?php echo e(route('manager.products.create')); ?>" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add New
                     Product</a>
             <?php endif; ?>
@@ -28,7 +28,7 @@
                     <th>Price</th>
                     <th>Stock</th>
                     <th>Status</th>
-                    <?php if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager'): ?>
+                    <?php if(auth()->user()->role === 'admin'): ?>
                         <th>Actions</th>
                     <?php endif; ?>
                 </tr>
@@ -58,7 +58,7 @@
                                 <span class="badge bg-danger">Unavailable</span>
                             <?php endif; ?>
                         </td>
-                        <?php if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager'): ?>
+                        <?php if(auth()->user()->role === 'admin'): ?>
                             <td>
                                 <a href="<?php echo e(route('manager.products.edit', $product)); ?>" class="btn btn-sm btn-outline-dark"><i
                                         class="bi bi-pencil"></i></a>
