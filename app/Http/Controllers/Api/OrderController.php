@@ -29,12 +29,12 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             $order = Order::create([
-                'user_id' => Auth::id(), // Will be the API user
+                'user_id' => Auth::id(),
                 'customer_name' => $validated['customer_name'],
                 'table_number' => $validated['table_number'] ?? null,
                 'order_type' => $validated['order_type'],
                 'total_amount' => $validated['total_amount'],
-                'payment_status' => 'paid', // Assuming API orders are paid immediately or logic handled elsewhere
+                'payment_status' => 'paid',
                 'payment_method' => $validated['payment_method'],
             ]);
 
@@ -62,7 +62,10 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }

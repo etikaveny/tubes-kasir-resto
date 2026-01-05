@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -14,7 +15,9 @@ class ProductController extends Controller
 
         // Transform image URL
         $products->transform(function ($product) {
-            $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
+            $product->image_url = $product->image
+                ? asset('storage/' . $product->image)
+                : null;
             return $product;
         });
 
@@ -40,8 +43,7 @@ class ProductController extends Controller
         $data = $request->all();
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $data['image'] = $path;
+            $data['image'] = $request->file('image')->store('products', 'public');
         }
 
         $product = Product::create($data);
@@ -55,11 +57,19 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::find($id);
+
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-        $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
-        return response()->json(['success' => true, 'data' => $product]);
+
+        $product->image_url = $product->image
+            ? asset('storage/' . $product->image)
+            : null;
+
+        return response()->json([
+            'success' => true,
+            'data' => $product,
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -84,11 +94,11 @@ class ProductController extends Controller
         $data = $request->all();
 
         if ($request->hasFile('image')) {
-            if ($product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($product->image);
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
             }
-            $path = $request->file('image')->store('products', 'public');
-            $data['image'] = $path;
+
+            $data['image'] = $request->file('image')->store('products', 'public');
         }
 
         $product->update($data);
@@ -111,8 +121,8 @@ class ProductController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        if ($product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($product->image);
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
         }
 
         $product->delete();
@@ -123,4 +133,3 @@ class ProductController extends Controller
         ]);
     }
 }
-
